@@ -259,3 +259,84 @@ INSERT INTO `ums_user` VALUES ('1349290158897311745', 'admin', 'admin', '$2a$10$
 INSERT INTO `ums_user` VALUES ('1349618748226658305', 'zhangsan', 'zhangsan', '$2a$10$7K3yYv8sMV5Xsc2facXTcuyDo8JQ4FJHvjZ7qtWYcJdei3Q6Fvqdm', 'https://s3.ax1x.com/2020/12/01/DfHNo4.jpg', '23456@qq.com', NULL, 0, '', '自由职业者', b'1', b'1', NULL, '2021-01-14 15:25:59', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ===========================错题集数据库================================================================
+DROP TABLE IF EXISTS `i_exerciserecord`;
+CREATE TABLE `i_exerciserecord` (
+                                    `historyId` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                    `questionsetId` int DEFAULT NULL COMMENT '对应错题集Id',
+                                    `questionId` int DEFAULT NULL COMMENT '错题Id',
+                                    `num` int DEFAULT NULL COMMENT '第几次练习',
+                                    `answer` varchar(500) DEFAULT NULL COMMENT '本题作答结果',
+                                    PRIMARY KEY (`historyId`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT = 6  CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT = '练习记录'  ROW_FORMAT = DYNAMIC ;
+
+DROP TABLE IF EXISTS `i_question`;
+CREATE TABLE `i_question` (
+                              `questionid` int NOT NULL AUTO_INCREMENT COMMENT '错题',
+                              `question` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '题目',
+                              `
+                            answer` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '答案',
+                              `options` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '选项',
+                              `remind` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '提示',
+                              `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '大类',
+                              `subtpe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '子类',
+                              `
+                            questiontype` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '题型，问答还是选择、填空',
+                              PRIMARY KEY (`questionid`) USING BTREE
+) ENGINE=InnoDB  AUTO_INCREMENT = 1 CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- ----------------------------
+-- Table structure for i_question_questionset
+-- ----------------------------
+DROP TABLE IF EXISTS `i_question_questionset`;
+CREATE TABLE `i_question_questionset` (
+                                          `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                          `questionsetId` int DEFAULT NULL COMMENT '题集主键',
+                                          `questionId` int DEFAULT NULL COMMENT '题主键',
+                                          `score` int DEFAULT NULL COMMENT '得分，题目出现的判断权重',
+                                          PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT = 1 CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- ----------------------------
+-- Table structure for i_questionset
+-- ----------------------------
+DROP TABLE IF EXISTS `i_questionset`;
+CREATE TABLE `i_questionset` (
+                                 `questionsetid` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                 `title` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '错题集名称',
+                                 `ownnerid` int DEFAULT NULL COMMENT '所有者id',
+                                 `createdate` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+                                 PRIMARY KEY (`questionsetid`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT = 1  CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- ----------------------------
+-- Table structure for i_user
+-- ----------------------------
+DROP TABLE IF EXISTS `i_user`;
+CREATE TABLE `i_user` (
+                          `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+                          `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+                          `password` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `openid` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+                          `sex` varchar(50) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `nickname` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `img` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `identity` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '身份',
+                          `address` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `phone` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+                          `enabled` tinyint(1) DEFAULT NULL COMMENT '账户是否被禁用',
+                          PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT = 1  CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+-- ----------------------------
+-- Table structure for i_user_proset
+-- ----------------------------
+DROP TABLE IF EXISTS `i_user_proset`;
+CREATE TABLE `i_user_proset` (
+                                 `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
+                                 `userId` int DEFAULT NULL,
+                                 `problemsetId` int DEFAULT NULL,
+                                 `title` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '分类',
+                                 PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT = 1  CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
