@@ -273,17 +273,15 @@ CREATE TABLE `i_exerciserecord` (
 
 DROP TABLE IF EXISTS `i_question`;
 CREATE TABLE `i_question` (
-                              `questionid` int NOT NULL AUTO_INCREMENT COMMENT '错题',
+                              `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '错题主键',
                               `question` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '题目',
-                              `
-                            answer` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '答案',
+                              `answer` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '答案',
                               `options` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '选项',
                               `remind` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '提示',
-                              `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '大类',
-                              `subtpe` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '子类',
-                              `
-                            questiontype` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '题型，问答还是选择、填空',
-                              PRIMARY KEY (`questionid`) USING BTREE
+                              `type_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '大类',
+                              `subtype_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '子类',
+                              `question_type` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '题型，问答还是选择、填空',
+                              PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB  AUTO_INCREMENT = 1 CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- ----------------------------

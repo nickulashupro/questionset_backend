@@ -48,6 +48,15 @@ public class UmsUser implements Serializable {
     @TableField("bio")
     private String bio = "自由职业者";
 
+    @TableField("nickname")
+    private String nickname;
+
+    @TableField("sex")
+    private String sex;
+
+    @TableField("open_id")
+    private String openId;
+
     @Builder.Default
     @TableField("score")
     private Integer score = 0;

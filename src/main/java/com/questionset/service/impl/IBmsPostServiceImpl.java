@@ -107,7 +107,6 @@ public class IBmsPostServiceImpl extends ServiceImpl<BmsTopicMapper, BmsPost> im
         map.put("tags", tags);
 
         // 作者
-
         ProfileVO user = iUmsUserService.getUserProfile(topic.getUserId());
         map.put("user", user);
 
