@@ -6,16 +6,48 @@
         <result column="questionset_id" property="questionset_id"/>
         <result column="question_id" property="question_id"/>
         <result column="score" property="score"/>
+        <result column="orderNum" property="orderNum"/>
     </resultMap>
-
-    <select id="selectQuestionQuestionSetList" resultMap="questionQuestionSet">
+<!--    resultMap="questionVO"-->
+    <select id="selectQuestionQuestionSetList" resultType="com.questionset.model.vo.QuestionVO">
         SELECT
-        id,questionset_id,question_id,score
-        FROM i_question_questionset
-        where questionset_id = #{id}
+            iqs.questionset_id,
+            iqs.orderNum,
+            iqs.score,
+            iq.id,
+            iq.question,
+            iq.answer,
+            iq.`options`,
+            iq.question_type,
+            iq.remind,
+            iq.answer,
+            iq.type_id,
+            iq.subtype_id,
+            iq.creat_user_id,
+            iq.creat_time
+        FROM
+            i_question_questionset iqs
+            LEFT JOIN i_question iq ON iqs.question_id = iq.id
+        WHERE
+            iqs.questionset_id = #{id}
+        <if test="orderType!=null">
+            <if test="orderType =='nature'">
+                order by iqs.orderNum asc
+            </if>
+            <if test="orderType =='random'">
+                order by rand()
+            </if>
+            <if test="orderType =='special'">
+                order by iqs.score desc
+            </if>
+        </if>
     </select>
 
     <delete id="removeByQuestionId" parameterType="string">
         delete from i_question_questionset where question_id=#{questionId}
     </delete>
+
+    <select id="selectMaxOrderNum" parameterType="string" resultType="java.lang.Integer">
+        SELECT Max(orderNum) from i_question_questionset where questionset_id=#{setId}
+    </select>
 </mapper>

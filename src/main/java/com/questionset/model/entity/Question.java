@@ -63,4 +63,15 @@ public class Question implements Serializable {
     @TableField(value = "question_type")
     private Integer questionType;
 
+    /**
+     * 创建人id
+     */
+    @TableField(value = "creat_user_id")
+    private String creatUserId;
+
+    /**
+     * 创建人时间
+     */
+    @TableField(value = "creat_time")
+    private Date creatTime;
 }

@@ -48,10 +48,11 @@ public class IQuestionSetServiceImpl extends ServiceImpl<QuestionSetMapper, Ques
     }
 
     @Override
-    public Map<String, Object> getInfoById(Page<Question> page, String id) {
+    public Map<String, Object> getInfoById(Page<QuestionVO> page, String id) {
         Map<String, Object> map = new HashMap<>(16);
         QuestionSet questionSet = this.baseMapper.selectById(id);
-        Assert.notNull(questionSet, "当前题集不存在,或已被删除");
+        if(questionSet==null)return null;
+//        Assert.notNull(questionSet, "当前题集不存在,或已被删除");
         // 查询话题详情
         //topic.setView(topic.getView() + 1);
         this.baseMapper.updateById(questionSet);
@@ -59,7 +60,7 @@ public class IQuestionSetServiceImpl extends ServiceImpl<QuestionSetMapper, Ques
         questionSet.setDescription(EmojiParser.parseToUnicode(questionSet.getDescription()));
         map.put("questionSet", questionSet);
         // 错题集合
-        Page<Question> questions = iQuestionService.getQuestionListBySetId(page,id);
+        Page<QuestionVO> questions = iQuestionService.getQuestionListBySetId(page,id,null);
         map.put("questions", questions);
         // 作者
         ProfileVO user = iUmsUserService.getUserProfile(questionSet.getCreateUserId());

@@ -7,53 +7,76 @@ import com.questionset.mapper.QuestionQuestionSetMapper;
 import com.questionset.model.dto.QuestionDTO;
 import com.questionset.model.entity.Question;
 import com.questionset.model.entity.QuestionQuestionSet;
+import com.questionset.model.entity.UmsUser;
+import com.questionset.model.vo.QuestionVO;
 import com.questionset.service.IQuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class IQuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> implements IQuestionService {
 
     @Autowired
-    private IQuestionService questionService;
-
-    @Autowired
     private QuestionQuestionSetMapper questionQuestionSetMapper;
 
     @Override
-    public Question create(QuestionDTO dto) {
+    public Question create(QuestionDTO dto, UmsUser user) {
+        String optionsstr ="";
+        if(dto.getOptions().length()>0){
+            optionsstr = generateJsonStr(dto.getOptions());
+        }
         Question question = Question.builder()
                 .question(dto.getQuestion())
                 .answer(dto.getAnswer())
-                .options(dto.getOptions())
+                .options(optionsstr)
                 .remind(dto.getRemind())
                 .typeId(dto.getTypeId())
                 .questionType(dto.getQuestionType())
+                .creatTime(new Date())
+                .creatUserId(user.getId())
                 .build();
         this.baseMapper.insert(question);
         return question;
     }
 
     @Override
-    public Page<Question> getQuestionListBySetId(Page<Question> page, String id) {
+    public Page<QuestionVO> getQuestionListBySetId(Page<QuestionVO> page, String id,String type) {
         Page<QuestionQuestionSet> relationPage = new Page<>(page.getCurrent(), page.getSize());
         relationPage.setTotal(page.getTotal());
-        Page<QuestionQuestionSet> questionQuestionSetPage = questionQuestionSetMapper.selectQuestionQuestionSetList(relationPage, id);
-        if(questionQuestionSetPage.getRecords().size() == 0) return null;
 
-        Set<String> set = new HashSet<>();
-        for (QuestionQuestionSet item : questionQuestionSetPage.getRecords()) {
-            set.add(item.getQuestion_id());
+        return questionQuestionSetMapper.selectQuestionQuestionSetList(relationPage, id, type);
+    }
+
+    @Override
+    public String generateJsonStr(String normalStr){
+        StringBuilder result = new StringBuilder("[");
+        Pattern itemPattern = Pattern.compile("[ABCDEFG][\\.|、]\\s*[^ABCDEFG]*");
+        Matcher itemMatcher = itemPattern.matcher(normalStr);
+        Pattern subPattern = Pattern.compile("[^ABCDEFG\\s.、]{1}.+");
+        while (itemMatcher.find()) {
+            String strTemp=itemMatcher.group(0);
+            Matcher subMatcher = subPattern.matcher(strTemp);
+            boolean isMatch = subMatcher.find();
+            String key = strTemp.substring(0,1);
+            result.append("{\"key\":\"");
+            result.append(key);
+            result.append("\",");
+
+            String value = "";
+            if(isMatch){
+                value = subMatcher.group(0);
+
+                result.append("\"value\":\"");
+                result.append(value);
+                result.append("\"},");
+            }
         }
-
-        List<Question> questions = questionService.listByIds(set);
-        Page<Question> QuestionPage = new Page<>(questionQuestionSetPage.getCurrent(), questionQuestionSetPage.getSize());
-        QuestionPage.setTotal(questionQuestionSetPage.getTotal());
-        QuestionPage.setRecords(questions);
-        return QuestionPage;
+        result.deleteCharAt(result.length() - 1);
+        result.append("]");
+        return result.toString().replace("\t"," ");
     }
 }

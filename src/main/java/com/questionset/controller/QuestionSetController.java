@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,13 +34,6 @@ public class QuestionSetController extends BaseController {
         return ApiResult.success(questionSetslist);
     }
 
-    @PostMapping("/add_questionset")
-    public ApiResult<QuestionSet> add_questionset(@RequestHeader(value = JwtUtil.USER_NAME) String userName, @RequestBody QuestionSetDTO dto){
-        UmsUser user = umsUserService.getUserByUsername(userName);
-        QuestionSet questionset = questionSetService.create(dto, user);
-        return ApiResult.success(questionset);
-    }
-
     @PostMapping("/update")
     public ApiResult<QuestionSet> update_questionset( @Valid @RequestBody QuestionSet set){
 //        UmsUser umsUser = umsUserService.getUserByUsername(userName);
@@ -58,11 +50,17 @@ public class QuestionSetController extends BaseController {
         return ApiResult.success(null, "删除成功");
     }
 
-    @PostMapping("/create")
-    public ApiResult<QuestionSet> create_questionset(@RequestHeader(value = JwtUtil.USER_NAME) String userName, @RequestBody QuestionSetDTO dto){
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public ApiResult<QuestionSet> create(@RequestHeader(value = JwtUtil.USER_NAME) String userName, @RequestBody QuestionSetDTO dto){
         UmsUser umsUser = umsUserService.getUserByUsername(userName);
         QuestionSet set = questionSetService.create(dto, umsUser);
         return ApiResult.success(set);
+    }
+
+    @GetMapping()
+    public ApiResult<QuestionSet> view(@RequestParam("id") String id) {
+        QuestionSet result = questionSetService.getBaseMapper().selectById(id);
+        return ApiResult.success(result);
     }
 
     @GetMapping("/getInfoById")

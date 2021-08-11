@@ -40,6 +40,12 @@ public class QuestionQuestionSet implements Serializable {
     private String question_id;
 
     /**
+     * 序号,题目在本题集中的序号
+     */
+    @TableField("orderNum")
+    private Integer orderNum;
+
+    /**
      * 得分,题目出现的判断权重
      */
     @TableField("score")

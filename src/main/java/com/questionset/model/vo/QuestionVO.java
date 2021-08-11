@@ -40,4 +40,21 @@ public class QuestionVO implements Serializable {
      * 题型
      */
     private Integer questionType;
+    /**
+     * 排序
+     */
+    private Integer orderNum;
+    /**
+     * 题集ID
+     */
+    private String questionsetId;
+    /**
+     * 得分
+     */
+    private Integer score;
+
+    private String creatUserId;
+
+    private Date creatTime;
+
 }
